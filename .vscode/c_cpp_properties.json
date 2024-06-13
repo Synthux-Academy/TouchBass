@@ -1,0 +1,44 @@
+{
+  "configurations": [
+    {
+      "cStandard": "c11",
+      "compilerPath": "arm-none-eabi-g++.exe",
+      "cppStandard": "c++17",
+      "defines": [
+        "USE_HAL_DRIVER",
+        "STM32H750xx",
+        "_DEBUG",
+        "UNICODE",
+        "_UNICODE",
+        "USE_DAISYSP_LGPL"
+      ],
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/lib/libDaisy//**",
+        "${workspaceFolder}/lib/DaisySP//**"
+      ],
+      "name": "Win32",
+      "windowsSdkVersion": "10.0.17763.0"
+    },
+    {
+      "cStandard": "c11",
+      "compilerPath": "/usr/local/bin/arm-none-eabi-g++",
+      "cppStandard": "c++17",
+      "defines": [
+        "USE_HAL_DRIVER",
+        "STM32H750xx",
+        "_DEBUG",
+        "UNICODE",
+        "_UNICODE",
+        "USE_DAISYSP_LGPL"
+      ],
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/lib/libDaisy//**",
+        "${workspaceFolder}/lib/DaisySP//**"
+      ],
+      "name": "macOS"
+    }
+  ],
+  "version": 4
+}
