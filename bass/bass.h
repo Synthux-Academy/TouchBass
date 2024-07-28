@@ -123,17 +123,17 @@ private:
   std::array<float, 2> _reverb_in;
   std::array<float, 2> _reverb_out;
   std::array<float, 2> _bus;
-  
+  std::array<bool, 128> _hold;
+
   float   _tempo;
   float   _env;
   float   _human_env_kof;
   uint8_t _random_note_chance;
   uint8_t _human_env_chance;
   uint8_t _scale_index;
-  
+  uint8_t _note_on_count;
   bool _is_arp_on;
   bool _is_latched;
-  std::array<bool, 128> _hold;
 };
 
 };

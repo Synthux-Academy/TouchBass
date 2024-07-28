@@ -16,10 +16,10 @@ static constexpr std::array<std::array<uint8_t, kScaleSize>, kScalesCount> kScal
 
 // ARP /////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-// Whether it's holding the note until the next one played
-static constexpr bool kArpNonLegato = false;
+static constexpr bool kArpNonLegato = false; // Whether it's holding the note until the next one played
 static constexpr bool kArpAsPlayed = true;
 static constexpr bool kArpPlayDown = false;
+static constexpr bool kArpTogglingLatch = false; //If true, each pad/key works as a toggle
 
 // VOX /////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////

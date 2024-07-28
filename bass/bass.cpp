@@ -12,8 +12,9 @@ _human_env_kof      { 0.f },
 _random_note_chance { 0 },
 _human_env_chance   { 0 },
 _scale_index        { 0 },
+_note_on_count      { 0 },
 _is_arp_on          { false },
-_is_latched         { false } 
+_is_latched         { false }
 {
     _reverb_in.fill(0);
     _reverb_out.fill(0);
@@ -97,14 +98,25 @@ void Bass::NoteOn(const uint8_t note) {
         return;
     }
 
-    if (_is_latched && _hold[note]) {
+    if (!kArpTogglingLatch && _note_on_count == 0) {
+        for (auto note = 0; note < 128; note ++) {
+            if (_hold[note]) {
+                _arp.NoteOff(note);
+                _hold[note] = false;
+            }
+        }
+    }  
+
+    if (kArpTogglingLatch && _is_latched && _hold[note]) {
         _arp.NoteOff(note);
         _hold[note] = false;
     }
-    else {
+    else { 
         _arp.NoteOn(note, 127);
         _hold[note] = true;
     }
+
+    _note_on_count ++;
 
     if (_arp.HasNote()) {
         if (!_clock.IsRunning()) _clock.Run();
@@ -124,6 +136,9 @@ void Bass::NoteOff(const uint8_t note) {
         _arp.NoteOff(note);
         _hold[note] = false;
     }
+    
+    _note_on_count --;
+
     if (!_arp.HasNote()) {
         Reset();
     }
