@@ -7,8 +7,6 @@
 #include "mvalue.h"
 #include <functional>
 
-#ifdef __cplusplus
-
 namespace synthux { 
 
 class BassUI {
@@ -27,7 +25,7 @@ public:
 private:
     void _next_scale() {
         _scale_index ++;
-        _scale_index = std::min(static_cast<uint8_t>(_scales.size() - 1), _scale_index);
+        _scale_index = std::min(static_cast<uint8_t>(kScales.size() - 1), _scale_index);
         _bass.SetRandomNoteScaleIndex(_scale_index);
     }
 
@@ -61,21 +59,12 @@ private:
     MValue _verb_value;
     MValue _env_value;
 
-    uint8_t _scale_index;
-
-    bool _is_to_touched;
-    bool _is_ch_touched;
-
     static constexpr uint8_t kNotesCount = 7;
     static constexpr uint16_t kFirstNotePad = 3;
 
-    std::array<std::array<uint8_t, kNotesCount>, 3> _scales = {{
-        { 48, 55, 58, 60, 62, 63, 65 }, // Amara C3, G3, A#3, C4, D4, D#4, F4
-        { 48, 52, 53, 55, 57, 60, 64 }, // Oxalis C3, E3, F3, G3, A3, C4, E4
-        { 48, 50, 51, 55, 58, 60, 62 }  // Pigmy C3, D3, D#3, G3, Bb3, C4, D4
-    }};
+    uint8_t _scale_index;
+    bool _is_to_touched;
+    bool _is_ch_touched;
 };
 
 };
-
-#endif
