@@ -1,7 +1,7 @@
 # THIS IS SIMPLE BASS
 
 ## QUICK INSTALL
-Download the [Binary file](https://github.com/Synthux-Academy/simple-touch-instruments/raw/main/daisyduino/TouchBass/TouchBass.bin) and flash using the [Daisy Seed web programmer](https://electro-smith.github.io/Programmer/)
+Download the [Binary file](https://github.com/Synthux-Academy/TouchBass/raw/main/TouchBass.bin) and flash using the [Daisy Seed web programmer](https://electro-smith.github.io/Programmer/)
 
 ## CONTROLS
 <img src="touch.jpeg" width="300"/>
