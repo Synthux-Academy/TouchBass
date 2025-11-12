@@ -225,7 +225,7 @@ void Bass::_on_driver_note_on(uint8_t vox_idx, uint8_t num, bool retrigger) {
     auto freq = _scale.FreqAt(num, _is_arp_on ? _random_note_chance : 0);
     auto& v = _voices[vox_idx];
     _filter.SetEnvelope(h_env);
-    _filter.Trigger(retrigger);
+    _filter.Trigger(false);
     v.SetEnvelope(h_env);
     v.NoteOn(freq, 1.f, retrigger);
 };

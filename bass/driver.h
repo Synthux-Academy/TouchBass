@@ -89,11 +89,12 @@ private:
       uint8_t queue_idx = kNone;
       uint8_t i;
     
+      vox.retrigger = false;
+
       // If one of the voice plays (or played) this note
       // this voice going to be chosen.
       for (i = 0; i < _vox_count; i++) {
           if (_notes[_queue[i]] != note) continue;
-          vox.retrigger = false;
           queue_idx = i;
           break;
       }
@@ -104,7 +105,6 @@ private:
         for (i = 0; i < _vox_count; i++) {
           if (!_active[_queue[i]]) {
               queue_idx = i;
-              vox.retrigger = true;
               break;
           }
         }
