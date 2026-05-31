@@ -20,7 +20,9 @@ public:
     }
 
     void startLog() {
+#ifndef USB_MIDI
         _hw->StartLog();
+#endif
     }
 
     template <typename... VA>
