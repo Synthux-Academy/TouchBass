@@ -72,3 +72,6 @@ Use [config.h](https://github.com/Synthux-Academy/TouchBass/blob/main/config.h) 
 ```shell
 $ make program-dfu
 ```
+
+> [!NOTE]
+> When tweaking code, run `make clean && make` for a full rebuild, or just `make` for an incremental rebuild (only recompiles changed files). The compiled binary is placed in the `build/` folder as `TouchBass.bin`.
