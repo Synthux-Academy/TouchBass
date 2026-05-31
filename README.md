@@ -45,6 +45,10 @@ Download the [Binary file](https://github.com/Synthux-Academy/TouchBass/releases
 - 126 Set mono
 - 127 Set poly (paraphonic)
 
+## PREREQUISITES
+- [Daisy Toolchain](https://daisy.audio/tutorials/cpp-dev-env/) (ARM GCC + make)
+- **Windows:** use [Git Bash](https://git-scm.com/downloads) to run the commands below — cmd and PowerShell won't work
+
 ## PROJECT SETUP
 ```shell
 $ git clone --recurse-submodules https://github.com/Synthux-Academy/TouchBass.git
@@ -56,7 +60,12 @@ $ cd ../..
 $ make clean; make
 ```
 
-## CONGIGURATION
+If you already have the repo cloned without submodules, run this first:
+```shell
+$ git submodule update --init --recursive
+```
+
+## CONFIGURATION
 Use [config.h](https://github.com/Synthux-Academy/TouchBass/blob/main/config.h) for changing scales, ranges, tweaking arpeggiator behavior.
 
 ## UPLOAD
