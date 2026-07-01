@@ -24,7 +24,9 @@ int main(void) {
 	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
 
 	HW::hw().setHW(&hw);
+#ifndef USB_MIDI
 	HW::hw().startLog();
+#endif
 
 	touch.Init(hw);
 	bass.Init(hw.AudioSampleRate(), hw.AudioBlockSize());
