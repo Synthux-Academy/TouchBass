@@ -169,7 +169,7 @@ void Bass::SetVoxParams(const VoxParams& p) {
         
         default: 
         mode = Vox::Osc2Mode::am;  
-        osc2_mult = 99 * p.osc2_pitch * p.osc2_pitch;
+        osc2_mult = 8 * p.osc2_pitch * p.osc2_pitch;
         break;
     }
 
