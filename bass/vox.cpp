@@ -42,7 +42,7 @@ float Vox::Process() {
         break;
       case Osc2Mode::am: 
         osc1_amp *= (1.f - _osc2_amount * (1 - osc2_out)) * 1.6 + 0.9 * _osc2_amount;
-        osc2_base_freq = 5.f;
+        osc2_base_freq = 2.f;
         break;
     }
     _osc1.SetFreq(_osc1_freq_mult * _base_freq);
