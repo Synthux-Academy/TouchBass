@@ -18,9 +18,11 @@ void Pads::Process() {
         is_touched = state & pad;
         was_touched = _state & pad;
         if (_on_touch != nullptr && is_touched && !was_touched) {
+            _state |= pad;
             _on_touch(i);
         }
         else if (_on_release != nullptr && was_touched && !is_touched) {
+            _state &= ~pad;
             _on_release(i);
         }
     }

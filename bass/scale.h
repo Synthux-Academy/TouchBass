@@ -17,7 +17,9 @@ public:
     return _trans[new_trans_index];
   };
 
-  void SetRandomScaleIndex(const uint8_t index) { _scale_index = index; };
+  void SetRandomScaleIndex(const uint8_t index) {
+    _scale_index = index < kScalesCount ? index : kScalesCount - 1;
+  };
 
   float FreqAt(uint8_t note, const uint8_t human_note_chance);
 

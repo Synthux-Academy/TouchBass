@@ -71,7 +71,7 @@ public:
   void SetPattern(const float value) { _pattern.SetOnsets(value); }
 
   void SetRandomNoteScaleIndex(const uint8_t index) {
-
+    _scale.SetRandomScaleIndex(index);
   }
   void SetRandomNoteChance(const float value) { 
     _random_note_chance = std::clamp<int>(value * 100, 0, 100); 
