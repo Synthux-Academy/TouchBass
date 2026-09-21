@@ -102,33 +102,40 @@ void BassUI::Process(DaisySeed& hw) {
 };
 
 void BassUI::_on_pad_touch(uint16_t pad) {
-    // Scale & Tempo
+    // Scale & Tempo. Modifier state is sampled live (not from the cached
+    // _is_to_touched/_is_ch_touched flags, which are one frame stale during
+    // edge dispatch). Require exactly one modifier so cross-talk between
+    // P10 and P11 can't silently pick the wrong action.
+    auto is_to = _touch.pads().IsTouched(10);
+    auto is_ch = _touch.pads().IsTouched(11);
     if (pad == 0) {
-        if (_is_to_touched) _bass.SlowDown();
-        else if (_is_ch_touched) _prev_scale();
+        if (is_to && !is_ch) _bass.SlowDown();
+        else if (is_ch && !is_to) _prev_scale();
         return;
     }
     if (pad == 2) {
-        if (_is_to_touched) _bass.SpeedUp();
-        else if (_is_ch_touched) _next_scale();
+        if (is_to && !is_ch) _bass.SpeedUp();
+        else if (is_ch && !is_to) _next_scale();
         return;
     }
 
     // Mono / para
-    if (pad == 11 && _is_to_touched) {
+    if (pad == 11 && is_to) {
         if (_bass.IsMono()) _bass.SetPoly();
         else _bass.SetMono();
     }
 
     // Notes
     if (pad < kFirstNotePad || pad >= kFirstNotePad + kNotesCount) return;
-    auto note = kScales[_scale_index][pad - kFirstNotePad];
+    auto scale_index = std::min<uint8_t>(_scale_index, kScalesCount - 1);
+    auto note = kScales[scale_index][pad - kFirstNotePad];
     _bass.NoteOn(note);
 };
 
 void BassUI::_on_pad_release(uint16_t pad) {
     if (pad < kFirstNotePad || pad >= kFirstNotePad + kNotesCount) return;
-    auto note = kScales[_scale_index][pad - kFirstNotePad];
+    auto scale_index = std::min<uint8_t>(_scale_index, kScalesCount - 1);
+    auto note = kScales[scale_index][pad - kFirstNotePad];
     _bass.NoteOff(note);
 };
 

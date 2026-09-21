@@ -30,8 +30,7 @@ private:
     }
 
     void _prev_scale() {
-        _scale_index --;
-        _scale_index = std::max(static_cast<uint8_t>(0), _scale_index);
+        if (_scale_index > 0) _scale_index--;
         _bass.SetRandomNoteScaleIndex(_scale_index);
     }
 
