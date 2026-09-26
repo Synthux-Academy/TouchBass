@@ -14,7 +14,9 @@ public:
     BassUI(Touch& touch, Bass& bass):
     _touch { touch },
     _bass { bass },
-    _scale_index  { 0 }
+    _scale_index  { 0 },
+    _suppressed_pads { 0 },
+    _blink_frames { 0 }
      {}
 
     ~BassUI() {}
@@ -23,16 +25,20 @@ public:
     void Process(daisy::DaisySeed& hw);
 
 private:
-    void _next_scale() {
+    bool _next_scale() {
         _scale_index ++;
         _scale_index = std::min(static_cast<uint8_t>(kScales.size() - 1), _scale_index);
         _bass.SetRandomNoteScaleIndex(_scale_index);
+        return _scale_index == kScales.size() - 1;
     }
 
-    void _prev_scale() {
+    bool _prev_scale() {
         if (_scale_index > 0) _scale_index--;
         _bass.SetRandomNoteScaleIndex(_scale_index);
+        return _scale_index == 0;
     }
+
+    void _blink() { _blink_frames = kBlinkCount * 2 * kBlinkFrames; }
 
     void _on_pad_touch(uint16_t pad);
     void _on_pad_release(uint16_t pad);
@@ -60,8 +66,12 @@ private:
 
     static constexpr uint8_t kNotesCount = 7;
     static constexpr uint16_t kFirstNotePad = 3;
+    static constexpr uint16_t kBlinkFrames = 20; // ~90 ms per half cycle
+    static constexpr uint16_t kBlinkCount = 3;
 
     uint8_t _scale_index;
+    uint16_t _suppressed_pads;
+    uint16_t _blink_frames;
     bool _is_to_touched;
     bool _is_ch_touched;
 };
