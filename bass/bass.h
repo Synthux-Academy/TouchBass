@@ -44,15 +44,29 @@ public:
   void Init(const float sample_rate, const float buffer_size);
   
   void SetTempo(const float tempo) { _clock.SetTempo(tempo); }
-  void SpeedUp() {
+  // Increment controls return true when the value is at an end stop.
+  bool SpeedUp() {
     _tempo = std::min(_tempo + .05f, 1.f);
     SetTempo(_tempo);
+    return _tempo >= 1.f;
   };
-  void SlowDown() {
+  bool SlowDown() {
       _tempo = std::max(_tempo - .05f, 0.05f);
       SetTempo(_tempo);
+      return _tempo <= 0.05f;
   };
   void ProcessClockIn(const bool state) { _clock.Process(state); }
+
+  bool ClockSlower() {
+    if (_clock_ppqn_idx > 0) _clock_ppqn_idx --;
+    _clock.SetPPQNIn(kClockPPQN[_clock_ppqn_idx]);
+    return _clock_ppqn_idx == 0;
+  };
+  bool ClockFaster() {
+    if (_clock_ppqn_idx < kClockPPQN.size() - 1) _clock_ppqn_idx ++;
+    _clock.SetPPQNIn(kClockPPQN[_clock_ppqn_idx]);
+    return _clock_ppqn_idx == kClockPPQN.size() - 1;
+  };
 
   void SetArpOn(const bool value);
   bool IsLatched() { return _is_latched; }
@@ -102,7 +116,10 @@ private:
   float _humanized_envelope(float env, uint8_t length);
   
   static constexpr uint8_t kPPQN = 48;
-  static constexpr uint8_t kPPQNExtern = 24;
+  // External clock rates in pulses per quarter note, slowest to fastest.
+  // Each must divide or be a multiple of kPPQN.
+  static constexpr std::array<uint16_t, 9> kClockPPQN = { 192, 96, 48, 24, 12, 8, 6, 4, 2 };
+  static constexpr uint8_t kClockPPQNDefault = 3; // 24, i.e. MIDI clock
   static constexpr uint8_t kNotesCount = 7;
   static constexpr uint8_t kVoxCount = 4;
 
@@ -126,6 +143,7 @@ private:
   std::array<bool, 128> _hold;
 
   float   _tempo;
+  uint8_t _clock_ppqn_idx;
   float   _env;
   float   _human_env_kof;
   uint8_t _random_note_chance;

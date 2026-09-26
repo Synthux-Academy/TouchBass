@@ -10,6 +10,8 @@ _raw_manual_tempo    { 120 },
 _ppqn_out            { 48 },
 _tr_time             { 0 },
 _ticks_per_clock     { 1 },
+_clock_div           { 1 },
+_clock_count         { 0 },
 _ticks               { 0 },
 _fticks              { 0 },
 _ticks_at_last_clock { 0 },
@@ -57,6 +59,10 @@ void SynClock::SetTempo(const float norm_value) {
 void SynClock::_external_clock_tick() {
     if (!_external_clock()) return;
     if (!_is_running && !_is_about_to_run) return;
+
+    // Placed after the run guards so playback starts on a divided boundary.
+    if (++_clock_count < _clock_div) return;
+    _clock_count = 0;
 
     if (_is_about_to_run) {
         _is_about_to_run = false;
@@ -132,6 +138,7 @@ void SynClock::_emit_ticks() {
 };
 
 void SynClock::_reset() {
+    _clock_count = 0;
     _fticks = 0;
     _ticks = 0;
     _ticks_at_last_clock = 0;

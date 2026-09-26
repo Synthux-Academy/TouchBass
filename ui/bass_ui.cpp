@@ -98,7 +98,15 @@ void BassUI::Process(DaisySeed& hw) {
     _bass.SetHumanEnvelopeChance(_human_env_value.Process(human_verb_knob_value, !_is_to_touched && !_is_ch_touched));
     _bass.SetReverbMix(_verb_value.Process(human_verb_knob_value, _is_to_touched));  
 
-    hw.SetLed(_bass.IsLatched());
+    // LED //////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    if (_blink_frames > 0) {
+        _blink_frames --;
+        hw.SetLed((_blink_frames / kBlinkFrames) % 2 != 0);
+    }
+    else {
+        hw.SetLed(_bass.IsLatched());
+    }
 };
 
 void BassUI::_on_pad_touch(uint16_t pad) {
@@ -109,13 +117,13 @@ void BassUI::_on_pad_touch(uint16_t pad) {
     auto is_to = _touch.pads().IsTouched(10);
     auto is_ch = _touch.pads().IsTouched(11);
     if (pad == 0) {
-        if (is_to && !is_ch) _bass.SlowDown();
-        else if (is_ch && !is_to) _prev_scale();
+        if (is_to && !is_ch) { if (_bass.SlowDown()) _blink(); }
+        else if (is_ch && !is_to) { if (_prev_scale()) _blink(); }
         return;
     }
     if (pad == 2) {
-        if (is_to && !is_ch) _bass.SpeedUp();
-        else if (is_ch && !is_to) _next_scale();
+        if (is_to && !is_ch) { if (_bass.SpeedUp()) _blink(); }
+        else if (is_ch && !is_to) { if (_next_scale()) _blink(); }
         return;
     }
 
@@ -123,6 +131,15 @@ void BassUI::_on_pad_touch(uint16_t pad) {
     if (pad == 11 && is_to) {
         if (_bass.IsMono()) _bass.SetPoly();
         else _bass.SetMono();
+    }
+
+    // While P10 is held these two pads set the clock divider instead of
+    // playing a note. Remember them, so releasing them stays silent too.
+    if ((pad == 8 || pad == 9) && is_to && !is_ch) {
+        auto at_end = (pad == 8) ? _bass.ClockSlower() : _bass.ClockFaster();
+        if (at_end) _blink();
+        _suppressed_pads |= (1 << pad);
+        return;
     }
 
     // Notes
@@ -133,6 +150,10 @@ void BassUI::_on_pad_touch(uint16_t pad) {
 };
 
 void BassUI::_on_pad_release(uint16_t pad) {
+    if (_suppressed_pads & (1 << pad)) {
+        _suppressed_pads &= ~(1 << pad);
+        return;
+    }
     if (pad < kFirstNotePad || pad >= kFirstNotePad + kNotesCount) return;
     auto scale_index = std::min<uint8_t>(_scale_index, kScalesCount - 1);
     auto note = kScales[scale_index][pad - kFirstNotePad];

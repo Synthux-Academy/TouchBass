@@ -26,9 +26,14 @@ Download the [Binary file](https://github.com/Synthux-Academy/TouchBass/releases
 
 **Pads**
 - P10 + P0/P02 - arpeggiator speed +/- (to engage ext. clock set to minimum)
+- P10 + P08/P09 - external clock slower / faster
 - P11 + P0/P02 - scale (one of the three)
 - P03...P09 - notes
 - P10 + P11 - monophonic / paraphonic mode
+
+**LED**
+- On while the arpeggiator is latched
+- Three flashes when an increment control hits its lowest or highest value
   
 ## MIDI CC
 - 71 Filter Resonance
@@ -69,16 +74,17 @@ $ git submodule update --init --recursive
 Use [config.h](https://github.com/Synthux-Academy/TouchBass/blob/main/config.h) for changing scales, ranges, tweaking arpeggiator behavior.
 
 ## EXTERNAL CLOCK SYNC
-Sync to MIDI clock over USB, or to an analog clock by soldering a mono jack to a free analog pin. Using **D28 (S43)** as default for tip and any ground pad for sleeve. D28 is 5V tolerant, so most clock outputs (volca, Pocket Operator, Eurorack, KeyStep) can connect directly.
-No extra components, and nothing to enable in code — change `kClockInPin` in
-[TouchBass.cpp](https://github.com/Synthux-Academy/TouchBass/blob/main/TouchBass.cpp)
-if you solder to a different pin.
+Sync to MIDI clock over USB, or to an analog clock by soldering a mono jack to a free analog pin: tip to **D28 (S43)**, sleeve to any ground pad. D28 is 5V tolerant, so most clock outputs (volca, Pocket Operator, Eurorack, KeyStep) connect directly, no extra components. Change `kClockInPin` in [TouchBass.cpp](https://github.com/Synthux-Academy/TouchBass/blob/main/TouchBass.cpp) to use a different pin.
 
-Sync engages when the tempo is turned all the way **down**: hold P10 and tap P0 until it bottoms out (eight taps from the default). P10 + P02 steps back out to the internal clock. Keep the pattern knob (S33) low at first, or it can look like nothing is happening.
+Sync engages when the tempo is turned all the way **down**: hold P10 and tap P0 until it bottoms out, eight taps from the default, and the LED flashes. P10 + P02 steps back out to the internal clock. Keep the pattern knob (S33) low at first, or it can look like nothing is happening.
 
-An analog clock and MIDI clock both feed the same input, so use one at a time.
-The expected rate is 24 pulses per quarter note (`kPPQNExtern` in
-[bass/bass.h](https://github.com/Synthux-Academy/TouchBass/blob/main/bass/bass.h)), which matches MIDI clock. Most analog sync outputs are slower — volca and Pocket Operator send 2 PPQN, Eurorack clocks are often 4 or 8 — so set that constant to match your source. It must divide 48 exactly: 2, 4, 6, 8, 12 and 24 all work.
+Both clock sources feed the same input, so use one at a time. Match the incoming pulse rate with **P10 + P08 / P09**, which doubles as a divider once locked. It starts at 24 PPQN (MIDI clock); volca and Pocket Operator send 2, Eurorack clocks are often 4 or 8. If the synth runs far too slow against your clock, this is the setting to change.
+
+| Setting | 192 | 96 | 48 | **24** | 12 | 8 | 6 | 4 | 2 |
+|---|---|---|---|---|---|---|---|---|---|
+| Speed | /8 | /4 | /2 | **x1** | x2 | x3 | x4 | x6 | x12 |
+
+While P10 is held, P08 and P09 act as this control instead of playing their notes.
 
 ## UPLOAD
 ```shell
