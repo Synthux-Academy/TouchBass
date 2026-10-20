@@ -129,14 +129,13 @@ void BassUI::_on_pad_touch(uint16_t pad) {
     if (pad < kFirstNotePad || pad >= kFirstNotePad + kNotesCount) return;
     auto scale_index = std::min<uint8_t>(_scale_index, kScalesCount - 1);
     auto note = kScales[scale_index][pad - kFirstNotePad];
+    _pad_notes[pad - kFirstNotePad] = note;
     _bass.NoteOn(note);
 };
 
 void BassUI::_on_pad_release(uint16_t pad) {
     if (pad < kFirstNotePad || pad >= kFirstNotePad + kNotesCount) return;
-    auto scale_index = std::min<uint8_t>(_scale_index, kScalesCount - 1);
-    auto note = kScales[scale_index][pad - kFirstNotePad];
-    _bass.NoteOff(note);
+    _bass.NoteOff(_pad_notes[pad - kFirstNotePad]);
 };
 
 #ifdef USB_MIDI

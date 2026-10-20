@@ -64,6 +64,10 @@ private:
     uint8_t _scale_index;
     bool _is_to_touched;
     bool _is_ch_touched;
+
+    // The note each note pad started, so letting go releases that note even
+    // if the scale changed while it was held.
+    std::array<uint8_t, kNotesCount> _pad_notes {};
 };
 
 };
