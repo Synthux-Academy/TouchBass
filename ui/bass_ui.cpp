@@ -63,7 +63,7 @@ void BassUI::Process(DaisySeed& hw) {
     auto osc1_value = _touch.knobs().s31().Process();
     v_params.osc1_pitch = _osc_1_freq.Process(osc1_value, !_is_to_touched);
     v_params.osc1_shape = _osc_1_shape.Process(osc1_value, _is_to_touched);
-    v_params.osc2_pitch = _touch.knobs().s32().Process();
+    v_params.osc2_pitch = _osc_2_freq.Process(_touch.knobs().s32().Process(), true);
     auto osc2_mode_switch = _touch.switches().B();
     switch (osc2_mode_switch) {
         case Switch3::POS_CENTER: v_params.osc2_mode_index = 1; break;
@@ -129,14 +129,13 @@ void BassUI::_on_pad_touch(uint16_t pad) {
     if (pad < kFirstNotePad || pad >= kFirstNotePad + kNotesCount) return;
     auto scale_index = std::min<uint8_t>(_scale_index, kScalesCount - 1);
     auto note = kScales[scale_index][pad - kFirstNotePad];
+    _pad_notes[pad - kFirstNotePad] = note;
     _bass.NoteOn(note);
 };
 
 void BassUI::_on_pad_release(uint16_t pad) {
     if (pad < kFirstNotePad || pad >= kFirstNotePad + kNotesCount) return;
-    auto scale_index = std::min<uint8_t>(_scale_index, kScalesCount - 1);
-    auto note = kScales[scale_index][pad - kFirstNotePad];
-    _bass.NoteOff(note);
+    _bass.NoteOff(_pad_notes[pad - kFirstNotePad]);
 };
 
 #ifdef USB_MIDI
@@ -165,6 +164,7 @@ void BassUI::_process_midi() {
                 auto note_msg = msg.AsNoteOff();
                 _bass.NoteOff(note_msg.note);
             }
+            break;
             case ControlChange: {
                 auto ctrl_msg = msg.AsControlChange();
                 auto num = ctrl_msg.control_number;

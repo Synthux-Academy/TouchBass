@@ -14,10 +14,10 @@ Download the [Binary file](https://github.com/Synthux-Academy/TouchBass/releases
 - S30 - Osc 2 amount
 - S31 - Osc 1 pitch +/- 1 octave
 - S31 + P10 - Osc 1 waveform saw/square
-- S32 - Osc 2 pitch +/- 1 octave
-- S33 - pattern
-- S34 - pitch randomisation
-- S35 - envelope randomisation
+- S32 - Osc 2 pitch +/- 1 octave (AM mode: modulation rate)
+- S33 - pattern (arpeggiator on)
+- S34 - pitch randomisation (arpeggiator on)
+- S35 - envelope randomisation (arpeggiator on)
 - S35 + P10 - reverb mix
 - S36 - filter cutoff
 - S36 + P10 - filter resonance

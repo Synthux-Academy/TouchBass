@@ -95,6 +95,7 @@ void Bass::SetLatch(const bool latch) {
 void Bass::NoteOn(const uint8_t note) {
     if (!_is_arp_on) {
         _driver.NoteOn(note);
+        _note_on_count ++;
         return;
     }
 
@@ -130,6 +131,7 @@ void Bass::NoteOff(const uint8_t note) {
     if (!_is_arp_on) {
         _driver.NoteOff(note);
         _hold[note] = false;
+        if (_note_on_count > 0) _note_on_count --;
         return;
     }
     if (!_is_latched) {
@@ -137,7 +139,7 @@ void Bass::NoteOff(const uint8_t note) {
         _hold[note] = false;
     }
     
-    _note_on_count --;
+    if (_note_on_count > 0) _note_on_count --;
 
     if (!_arp.HasNote()) {
         Reset();
