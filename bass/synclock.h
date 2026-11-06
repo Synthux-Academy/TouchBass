@@ -36,6 +36,26 @@ public:
     Read external clock pin
     */
     void Process(const bool state);
+
+    /*
+    Rate of the external clock in pulses per quarter note.
+    Above the source's actual rate runs slower, below runs faster.
+    */
+    void SetPPQNIn(const uint32_t ppqn_in) {
+      if (ppqn_in == 0) return;
+      if (ppqn_in > _ppqn_out) {
+        // Below one tick per pulse, so divide the incoming clock instead.
+        if (ppqn_in % _ppqn_out != 0) return;
+        _ticks_per_clock = 1;
+        _clock_div = ppqn_in / _ppqn_out;
+      }
+      else {
+        if (_ppqn_out % ppqn_in != 0) return;
+        _ticks_per_clock = _ppqn_out / ppqn_in;
+        _clock_div = 1;
+      }
+      if (_external_clock()) _reset();
+    }
     
     float Tempo() { return 60000000.f / _tempo_mks; }
     /*
@@ -90,6 +110,8 @@ private:
     uint32_t _ppqn_out;
     uint32_t _tr_time;
     uint32_t _ticks_per_clock;
+    uint32_t _clock_div;
+    uint32_t _clock_count;
     uint32_t _ticks;
     uint32_t _fticks;
     uint32_t _ticks_at_last_clock;

@@ -7,6 +7,7 @@ Bass::Bass():
 _trigger            { Trigger(kPPQN) },
 _dice               { std::uniform_int_distribution<uint8_t>(0, 100) },
 _tempo              { .45f },
+_clock_ppqn_idx     { kClockPPQNDefault },
 _env                { 0.f },
 _human_env_kof      { 0.f },
 _random_note_chance { 0 },
@@ -25,7 +26,7 @@ _is_latched         { false }
 void Bass::Init(const float sample_rate, const float buffer_size) {
     using namespace std::placeholders;
 
-    _clock.Init(1e6 * buffer_size / sample_rate, kPPQNExtern, kPPQN);
+    _clock.Init(1e6 * buffer_size / sample_rate, kClockPPQN[kClockPPQNDefault], kPPQN);
 
     auto on_clock = std::bind(&Bass::_on_clock_tick, this);
     _clock.SetOnTick(on_clock);
